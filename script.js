@@ -13,7 +13,10 @@ const notice = document.querySelector("#notice");
 const noticeClose = document.querySelector("#noticeClose");
 const coach = document.querySelector("#coach");
 const tagline = document.querySelector("#tagline");
-const THROW_SOUND_URL = "file:///D:/2718075060/Desk/rw%E6%AF%95%E4%B8%9A/audio_1781024297127.mp3";
+const THROW_SOUND_URLS = [
+  "./throw-sound.mp3",
+  "file:///D:/2718075060/Desk/rw%E6%AF%95%E4%B8%9A/audio_1781024297127.mp3"
+];
 
 const IDLE_LINES = [
   "我叫娜塔莎，潮汕话 = 垃圾桶哦～",
@@ -65,6 +68,7 @@ const state = {
   muted: false,
   audioContext: null,
   throwAudio: null,
+  throwAudioIndex: 0,
   throwAudioReady: false,
   petStreak: 0,
   patStreak: 0,
@@ -163,7 +167,7 @@ function ensureAudio() {
 function ensureThrowAudio() {
   if (state.muted) return null;
   if (!state.throwAudio) {
-    state.throwAudio = new Audio(THROW_SOUND_URL);
+    state.throwAudio = new Audio(THROW_SOUND_URLS[state.throwAudioIndex]);
     state.throwAudio.preload = "auto";
     state.throwAudio.volume = 0.9;
     state.throwAudio.addEventListener("canplaythrough", () => {
@@ -171,6 +175,10 @@ function ensureThrowAudio() {
     });
     state.throwAudio.addEventListener("error", () => {
       state.throwAudioReady = false;
+      if (state.throwAudioIndex < THROW_SOUND_URLS.length - 1) {
+        state.throwAudioIndex += 1;
+        state.throwAudio = null;
+      }
     });
   }
   return state.throwAudio;
