@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>娜塔莎互动乐园</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="娜塔莎互动乐园">
+      <header class="game-header">
+        <div class="header-actions">
+          <button id="soundToggle" class="icon-button" type="button" aria-label="关闭音效" title="音效开关">♪</button>
+          <button id="resetTop" class="icon-button" type="button" aria-label="一键重置" title="一键重置">↺</button>
+        </div>
+        <h1>🎀 娜塔莎互动乐园 🎀</h1>
+        <p id="tagline">蔡大伯同款・可捏可玩・垃圾桶女孩</p>
+      </header>
+
+      <section class="stage" aria-label="主体互动区">
+        <div class="orientation-tip">请竖屏体验娜塔莎互动乐园</div>
+        <div class="cloud cloud-a"></div>
+        <div class="cloud cloud-b"></div>
+        <div class="cloud cloud-c"></div>
+
+        <div id="bubble" class="speech-bubble" role="status" aria-live="polite"></div>
+        <div id="babyArea" class="baby-area" aria-label="迷你娜塔莎区域"></div>
+
+        <div id="natasha" class="natasha idle" aria-label="娜塔莎，可点击或拖拽互动">
+          <div class="head hit-zone" data-part="head" aria-label="头部">
+            <div class="scalp-texture"></div>
+            <div class="ear ear-left"></div>
+            <div class="ear ear-right"></div>
+            <div class="eye eye-left"></div>
+            <div class="eye eye-right"></div>
+            <div class="nose"></div>
+            <div class="mouth"></div>
+          </div>
+
+          <div class="neck"></div>
+          <div class="body hit-zone" data-part="body" aria-label="躯干">
+            <div id="belly" class="belly hit-zone" data-part="belly" aria-label="肚子"></div>
+            <div class="pants"></div>
+          </div>
+
+          <div class="arm arm-left hit-zone" data-part="limb"><span class="fingers"></span></div>
+          <div class="arm arm-right hit-zone" data-part="limb"><span class="fingers"></span></div>
+          <div class="leg leg-left hit-zone" data-part="limb"><span class="toes"></span></div>
+          <div class="leg leg-right hit-zone" data-part="limb"><span class="toes"></span></div>
+        </div>
+
+        <div class="floor-shadow"></div>
+        <div id="coach" class="coach-tip">点击 / 拖拽娜塔莎即可互动哦！</div>
+      </section>
+
+      <nav class="controls" aria-label="功能按钮">
+        <button type="button" id="throwBtn">
+          <span>趣味抛掷</span>
+          <small>名场面</small>
+        </button>
+        <button type="button" id="waterBtn">
+          <span>注水</span>
+          <small>咕噜咕噜</small>
+        </button>
+        <button type="button" id="petBtn">
+          <span>摸头</span>
+          <small>摸头杀</small>
+        </button>
+        <button type="button" id="patBtn">
+          <span>趣味拍打</span>
+          <small>轻轻拍</small>
+        </button>
+        <button type="button" id="resetBtn">
+          <span>重置状态</span>
+          <small>清空回弹</small>
+        </button>
+      </nav>
+    </main>
+
+    <div id="notice" class="notice-mask" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
+      <section class="notice-card">
+        <h2 id="noticeTitle">温馨提示</h2>
+        <p>本游戏为网络玩梗娱乐作品，角色形变均为卡通夸张效果，主打解压休闲，无任何不良导向，请勿模仿现实行为。</p>
+        <button id="noticeClose" type="button">知道啦，开始玩</button>
+      </section>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
