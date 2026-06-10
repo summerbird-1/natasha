@@ -26,6 +26,8 @@
         <div id="bubble" class="speech-bubble" role="status" aria-live="polite"></div>
         <div id="babyArea" class="baby-area" aria-label="迷你娜塔莎区域"></div>
 
+        <canvas id="natasha3d" class="natasha-canvas" aria-hidden="true"></canvas>
+
         <div id="natasha" class="natasha idle" aria-label="娜塔莎，可点击或拖拽互动">
           <div class="head hit-zone" data-part="head" aria-label="头部">
             <div class="scalp-texture"></div>
@@ -43,10 +45,10 @@
             <div class="pants"></div>
           </div>
 
-          <div class="arm arm-left hit-zone" data-part="limb"><span class="fingers"></span></div>
-          <div class="arm arm-right hit-zone" data-part="limb"><span class="fingers"></span></div>
-          <div class="leg leg-left hit-zone" data-part="limb"><span class="toes"></span></div>
-          <div class="leg leg-right hit-zone" data-part="limb"><span class="toes"></span></div>
+          <div class="arm arm-left hit-zone" data-part="leftArm"><span class="fingers"></span></div>
+          <div class="arm arm-right hit-zone" data-part="rightArm"><span class="fingers"></span></div>
+          <div class="leg leg-left hit-zone" data-part="leftLeg"><span class="toes"></span></div>
+          <div class="leg leg-right hit-zone" data-part="rightLeg"><span class="toes"></span></div>
         </div>
 
         <div class="floor-shadow"></div>
@@ -86,5 +88,6 @@
     </div>
 
     <script src="./script.js"></script>
+    <script type="module" src="./three-natasha.js"></script>
   </body>
 </html>

@@ -122,6 +122,7 @@ function setMood(mood, duration = 3000) {
   state.mood = mood;
   natasha.classList.remove("idle", "pinch", "hit", "pet", "birth");
   natasha.classList.add(mood);
+  window.Natasha3D?.setMood(mood);
   window.clearTimeout(state.resetTimer);
 
   if (mood !== "idle" && mood !== "watered") {
@@ -137,6 +138,7 @@ function returnToIdle() {
   natasha.classList.add("idle");
   natasha.style.removeProperty("transform");
   clearStretch();
+  window.Natasha3D?.setMood("idle");
   scheduleIdleLine();
 }
 
@@ -153,6 +155,7 @@ function clearStretch() {
   natasha.style.removeProperty("--limb-right");
   natasha.style.removeProperty("--leg-left");
   natasha.style.removeProperty("--leg-right");
+  window.Natasha3D?.clearStretch();
 }
 
 function ensureAudio() {
@@ -250,6 +253,13 @@ function playTone(type) {
     return;
   }
 
+  if (type === "splat") {
+    tone(72, 0.2, "square", 0.12, 0, 38);
+    tone(118, 0.16, "sawtooth", 0.08, 0.04, 64);
+    tone(230, 0.1, "triangle", 0.045, 0.12, 160);
+    return;
+  }
+
   if (type === "baby") {
     tone(440, 0.22, "sine", 0.075, 0, 650);
     tone(620, 0.24, "sine", 0.058, 0.2, 420);
@@ -304,7 +314,8 @@ function applyStretch(part, dx, dy) {
   natasha.classList.add("stretching");
   natasha.classList.toggle("stretch-head", part === "head");
   natasha.classList.toggle("stretch-body", part === "body" || part === "belly");
-  natasha.classList.toggle("stretch-limb", part !== "head" && part !== "body" && part !== "belly");
+  const isLimb = part !== "head" && part !== "body" && part !== "belly";
+  natasha.classList.toggle("stretch-limb", isLimb);
   natasha.style.setProperty("--pull-x", pullX.toFixed(3));
   natasha.style.setProperty("--pull-y", pullY.toFixed(3));
   natasha.style.setProperty("--pull-abs-x", absX.toFixed(3));
@@ -319,6 +330,7 @@ function applyStretch(part, dx, dy) {
     natasha.style.setProperty("--leg-left", `${Math.max(-10, Math.min(18, dy / 10))}deg`);
     natasha.style.setProperty("--leg-right", `${Math.max(-18, Math.min(10, -dy / 10))}deg`);
   }
+  window.Natasha3D?.applyStretch(part, dx, dy);
 }
 
 function springBack() {
@@ -379,7 +391,12 @@ function throwNatasha() {
   if (!playThrowSound()) playTone("throw");
   speak("我的娜塔莎！你怎么掉地上啦！");
   natasha.classList.add("thrown");
+  window.Natasha3D?.throw();
   spawnParticles(window.innerWidth / 2, window.innerHeight * 0.72, "cloud", 24);
+  window.setTimeout(() => {
+    playTone("splat");
+    spawnParticles(window.innerWidth / 2, window.innerHeight * 0.74, "cloud", 34);
+  }, 1950);
   window.setTimeout(() => {
     natasha.classList.remove("thrown");
     returnToIdle();
@@ -387,14 +404,21 @@ function throwNatasha() {
 }
 
 function waterNatasha() {
-  state.waterLevel = 3;
+  state.waterLevel = Math.min(3, state.waterLevel + 1);
+  const level = state.waterLevel;
+  const bodyScale = 1 + level * 0.11;
+  const bellyPop = 1 + level * 0.25;
+  const headScale = 1 + level * 0.07;
+
   playTone("water");
   setMood("watered", 0);
   natasha.classList.add("watered");
-  natasha.style.setProperty("--belly-scale", "1.32");
-  belly.style.setProperty("--belly-pop", "1.76");
+  natasha.style.setProperty("--belly-scale", bodyScale.toFixed(2));
+  natasha.style.setProperty("--head-water-scale", headScale.toFixed(2));
+  belly.style.setProperty("--belly-pop", bellyPop.toFixed(2));
+  window.Natasha3D?.water(level);
   spawnParticles(window.innerWidth / 2, window.innerHeight * 0.58, "star", 9);
-  speak(pick(LINES.water));
+  speak(level < 3 ? `注水 ${level}/3：娜塔莎又圆了一圈～` : pick(LINES.water));
 
   window.clearTimeout(state.waterTimer);
   state.waterTimer = window.setTimeout(deflateWater, 5000);
@@ -404,7 +428,9 @@ function deflateWater() {
   state.waterLevel = 0;
   natasha.classList.remove("watered", "birth");
   natasha.style.removeProperty("--belly-scale");
+  natasha.style.removeProperty("--head-water-scale");
   belly.style.removeProperty("--belly-pop");
+  window.Natasha3D?.water(0);
   returnToIdle();
 }
 
@@ -466,11 +492,13 @@ function resetGame() {
   natasha.className = "natasha idle";
   natasha.style.removeProperty("transform");
   natasha.style.removeProperty("--belly-scale");
+  natasha.style.removeProperty("--head-water-scale");
   belly.style.removeProperty("--belly-pop");
   state.mood = "idle";
   state.waterLevel = 0;
   state.petStreak = 0;
   state.patStreak = 0;
+  window.Natasha3D?.reset();
   speak("状态已重置，娜塔莎又软萌上线啦～");
 }
 
