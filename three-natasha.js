@@ -1,14 +1,52 @@
-import * as THREE from "https://unpkg.com/three@0.165.0/build/three.module.js";
-
 const canvas = document.querySelector("#natasha3d");
 const shell = document.querySelector(".game-shell");
+const coachTip = document.querySelector("#coach");
+const isFilePage = window.location.protocol === "file:";
 
-const renderer = new THREE.WebGLRenderer({
-  canvas,
-  antialias: true,
-  alpha: true,
-  powerPreference: "high-performance"
-});
+function show3DError(message) {
+  console.warn(message);
+  if (coachTip) {
+    coachTip.textContent = message;
+    coachTip.classList.add("show");
+    window.setTimeout(() => coachTip.classList.remove("show"), 3600);
+  }
+}
+
+async function loadThree() {
+  const sources = [
+    "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+    "https://fastly.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+    "https://unpkg.com/three@0.165.0/build/three.module.js",
+    "https://esm.sh/three@0.165.0"
+  ];
+
+  let lastError = null;
+  for (const source of sources) {
+    try {
+      return await import(source);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  show3DError(isFilePage ? "3D库加载失败：file本地打开容易被拦截，请用本地HTTP服务或部署后访问。" : "3D库加载失败：请检查网络或CDN访问。");
+  throw lastError;
+}
+
+const THREE = await loadThree();
+
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+    powerPreference: "high-performance"
+  });
+} catch (error) {
+  show3DError("当前浏览器 WebGL 不可用，无法显示3D效果。");
+  throw error;
+}
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
